@@ -21,6 +21,9 @@ spec:
     - name: {{ $key }}
 {{ toYaml $value | indent 6 }}
   {{- end }}
+    {{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "logstash.name" . }}
     release: {{ .Release.Name }}
@@ -37,7 +40,4 @@ spec:
 {{- end }}
 {{- if .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
-{{- end }}
-{{ if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
-  nodePort: {{ .Values.service.nodePort }}
 {{- end }}
